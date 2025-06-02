@@ -23,6 +23,7 @@ resource "aws_db_instance" "mysql" {
   db_subnet_group_name = aws_db_subnet_group.rds.name
   vpc_security_group_ids = var.vpc_security_group_ids
   skip_final_snapshot  = true
+  backup_retention_period = 7
 
   tags = merge(
     var.project_tags,
