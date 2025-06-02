@@ -9,8 +9,7 @@ resource "aws_lb" "web_lb" {
   tags = merge(
     var.project_tags,
     {
-      Name = "public-subnet-${count.index + 1}"
-      Type = "Public"
+      Name = "web-alb"
     }
   )
 }
@@ -33,8 +32,7 @@ resource "aws_lb_target_group" "web_tg" {
   tags = merge(
     var.project_tags,
     {
-      Name = "public-subnet-${count.index + 1}"
-      Type = "Public"
+      Name = "alb-target-group"
     }
   )
 }

@@ -5,8 +5,7 @@ resource "aws_db_subnet_group" "rds" {
   tags = merge(
     var.project_tags,
     {
-      Name = "public-subnet-${count.index + 1}"
-      Type = "Public"
+      Name = "rds-subnet-groups"
     }
   )
 }
@@ -27,7 +26,7 @@ resource "aws_db_instance" "mysql" {
   tags = merge(
     var.project_tags,
     {
-      Name = "public-subnet-${count.index + 1}"
+      Name = "demo-rds"
       Type = "Public"
     }
   )
