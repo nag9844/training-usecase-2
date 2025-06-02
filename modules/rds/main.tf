@@ -22,11 +22,18 @@ resource "aws_db_instance" "mysql" {
   publicly_accessible  = false
   db_subnet_group_name = aws_db_subnet_group.rds.name
   vpc_security_group_ids = var.vpc_security_group_ids
-  skip_final_snapshot  = true
+  #skip_final_snapshot  = true
+
   # Backups are required in order to create a replica
   maintenance_window      = "Mon:00:00-Mon:03:00"
   backup_window           = "03:00-06:00"
-  backup_retention_period = 1
+  backup_retention_period = 7
+
+  # Enable automated backups
+  skip_final_snapshot = false
+  multi_az = true
+  final_snapshot_identifier = "db-snap"
+
 
   tags = merge(
     var.project_tags,
@@ -35,7 +42,6 @@ resource "aws_db_instance" "mysql" {
     }
   )
 }
-
 
 
 resource "aws_db_instance" "demo-rds-read" {
