@@ -1,4 +1,5 @@
-name: two-tier architecture consisting of a Web tier and a Database tier in AWS environment.
+
+name: AWS infra
 
 on:
   workflow_dispatch:
@@ -16,7 +17,27 @@ permissions:
   id-token: write
   contents: read
 
+
 jobs:
+  lint-and-security:
+    name: Lint and Security Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install TFLint
+        run: |
+          wget https://github.com/terraform-linters/tflint/releases/download/v0.50.2/tflint_linux_amd64.zip
+          unzip tflint_linux_amd64.zip
+          sudo mv tflint /usr/local/bin/
+          tflint --version
+
+      - name: Run TFLint
+        run: tflint --init && tflint -f compact
+        working-directory: ./
+
   terraform:
     name: Terraform ${{ github.event.inputs.action }}
     runs-on: ubuntu-latest
@@ -67,3 +88,4 @@ jobs:
       - name: Terraform Destroy
         if: github.event.inputs.action == 'destroy'
         run: terraform destroy -auto-approve
+ 
