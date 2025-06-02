@@ -11,6 +11,7 @@ resource "aws_db_subnet_group" "rds" {
 }
 
 resource "aws_db_instance" "mysql" {
+  identifier           = demo-rds
   allocated_storage    = var.allocated_storage
   engine               = var.engine
   engine_version       = var.engine_version
@@ -27,8 +28,17 @@ resource "aws_db_instance" "mysql" {
     var.project_tags,
     {
       Name = "demo-rds"
-      Type = "Public"
     }
   )
 }
 
+resource "aws_kms_key" "default" {
+  description = "Encryption key for automated backups"
+
+}
+
+resource "aws_db_instance_automated_backups_replication" "default" {
+  source_db_instance_arn = aws_db_instance.mysql.arn
+  kms_key_id             = aws_kms_key.default.arn
+
+}
