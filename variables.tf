@@ -30,6 +30,36 @@ variable "private_subnet_cidrs" {
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
 }
 
+variable "ami" {
+  description = "AMI ID for the EC2 instances"
+  type        = string
+  default     = "ami-0e35ddab05955cf57"
+}
+
+variable "instance_type" {
+  description = "Instance type for the EC2 instances"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "db_name" {
+  description = "The name of the database"
+  type        = string
+  default     = "mydatabase"
+}
+
+variable "db_username" {
+  description = "The username for the database"
+  type        = string
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "The password for the database"
+  type        = string
+  default     = "mypassword"
+}
+
 variable "project_tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
