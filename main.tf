@@ -44,6 +44,7 @@ module "compute" {
                       sudo systemctl enable nginx
                       HOSTNAME=$(hostname)
                       echo '<html><body><h1>Hostname: '"$HOSTNAME"'</h1></body></html>' > /usr/share/nginx/html/index.html
+                      sudo systemctl restart nginx
                       EOF
   project_tags = var.project_tags
 }
