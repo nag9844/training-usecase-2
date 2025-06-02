@@ -42,11 +42,12 @@ module "compute" {
                       sudo apt install -y nginx 
                       sudo systemctl start nginx
                       sudo systemctl enable nginx
-                      hostname=$(hostname)
-                      echo "<html><body><h1>Hostname: $hostname</h1></body></html>" > /usr/share/nginx/html/index.html
+                      HOSTNAME=$(hostname)
+                      echo '<html><body><h1>Hostname: '"$HOSTNAME"'</h1></body></html>' > /usr/share/nginx/html/index.html
                       EOF
   project_tags = var.project_tags
 }
+
 
 module "rds" {
   source               = "./modules/rds"
