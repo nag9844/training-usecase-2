@@ -11,7 +11,7 @@ resource "aws_db_subnet_group" "rds" {
 }
 
 resource "aws_db_instance" "mysql" {
-  identifier           = demo-rds
+  identifier           = "demo-rds"
   allocated_storage    = var.allocated_storage
   engine               = var.engine
   engine_version       = var.engine_version
