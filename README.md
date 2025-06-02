@@ -126,8 +126,40 @@ module "vpc" {
   project_tags         = var.project_tags
 }
 ```
+### 2. Application Load Balancer (ALB) Setup
 
-### 2. Web Tier Implementation
+The ALB module creates:
+- Application Load Balancer in public subnets
+- Target groups for EC2 instances
+- HTTPS listener with SSL/TLS termination
+- Health checks for backend instances
+- Security groups for ALB traffic
+
+```hcl
+module "load_balancer" {
+  source                = "./modules/load_balancer"
+  name                  = "web-lb"
+  security_group_id     = module.security.web_security_group_id
+  subnet_ids            = module.vpc.public_subnet_ids
+  target_group_name     = "web-target-group"
+  target_group_port     = 80
+  target_group_protocol = "HTTP"
+  vpc_id                = module.vpc.vpc_id
+  health_check_path     = "/"
+  health_check_protocol = "HTTP"
+  health_check_interval = 30
+  health_check_timeout  = 5
+  healthy_threshold     = 2
+  unhealthy_threshold   = 2
+  listener_port         = 80
+  listener_protocol     = "HTTP"
+  target_ids            = module.compute.web_instance_ids
+  project_tags            = var.project_tags
+}
+```
+
+
+### 3. Web Tier Implementation
 
 The web tier module creates:
 - EC2 instances in public subnets
@@ -156,7 +188,7 @@ module "compute" {
 }
 ```
 
-### 3. Database Tier Implementation
+### 4. Database Tier Implementation
 
 The database tier module creates:
 - RDS MySQL instance in private subnets
@@ -180,7 +212,7 @@ module "rds" {
 }
 ```
 
-### 4. Remote State Management
+### 5. Remote State Management
 
 The backend configuration uses S3 for state storage and DynamoDB for state locking:
 
@@ -227,7 +259,18 @@ The CI/CD pipeline is configured in `.github/workflows/web-rds.yml`:
 5. Apply the configuration:
    ```
    terraform apply
-   ```
+   ```module "alb" {
+  source = "./modules/alb"
+  
+  vpc_id            = module.load_balancer.vpc_id
+  public_subnet_ids = module.load_balancer.public_subnet_ids
+  
+  certificate_arn   = var.certificate_arn
+  health_check_path = "/health"
+  
+  project_name = var.project_name
+  environment  = var.environment
+}
 
 6. To destroy the infrastructure:
    ```
