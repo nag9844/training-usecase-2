@@ -23,7 +23,10 @@ resource "aws_db_instance" "mysql" {
   db_subnet_group_name = aws_db_subnet_group.rds.name
   vpc_security_group_ids = var.vpc_security_group_ids
   skip_final_snapshot  = true
-  backup_retention_period = 7
+  # Backups are required in order to create a replica
+  maintenance_window      = "Mon:00:00-Mon:03:00"
+  backup_window           = "03:00-06:00"
+  backup_retention_period = 1
 
   tags = merge(
     var.project_tags,
@@ -38,7 +41,6 @@ resource "aws_db_instance" "replica-mysql" {
   instance_class          = "db.t3.micro"
   skip_final_snapshot     = true
   replicate_source_db     = aws_db_instance.mysql.identifier
-  backup_retention_period = 7
 
   tags = merge(
     var.project_tags,
@@ -48,4 +50,18 @@ resource "aws_db_instance" "replica-mysql" {
   )
 
   depends_on = [aws_db_instance.mysql]  
+}
+
+
+
+resource "aws_db_instance" "demo-rds-read" {
+  identifier             = "demo-rds-read"
+  replicate_source_db    = aws_db_instance.mysql.identifier
+  instance_class         = "db.t3.micro"
+  skip_final_snapshot    = true
+# Username and password must not be set for replicas
+  username = ""
+  password = ""
+# disable backups to create DB faster
+  backup_retention_period = 0
 }
