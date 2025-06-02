@@ -35,7 +35,7 @@ resource "aws_db_instance" "mysql" {
 resource "aws_db_instance" "replica-mysql" {
   instance_class       = "db.t3.micro"
   skip_final_snapshot  = true
-  # backup_retention_period = 7
+  backup_retention_period = 7
   replicate_source_db = aws_db_instance.mysql.identifier
   tags = merge(
     var.project_tags,
