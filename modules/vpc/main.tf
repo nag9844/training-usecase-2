@@ -59,7 +59,7 @@ resource "aws_internet_gateway" "demo-igw" {
 }
 
 # Elastic IP for NAT Gateway
-resource "aws_eip" "nat" {
+resource "aws_eip" "nat-ip" {
   domain = "vpc"
 
   tags = merge(
@@ -72,7 +72,7 @@ resource "aws_eip" "nat" {
 
 # NAT Gateway
 resource "aws_nat_gateway" "demo-nat" {
-  allocation_id = aws_eip.nat.id
+  allocation_id = aws_eip.nat-ip.id
   subnet_id     = aws_subnet.public[0].id
 
   tags = merge(
@@ -91,7 +91,7 @@ resource "aws_route_table" "public" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.demo-vpc.id
+    gateway_id = aws_internet_gateway.demo-igw.id
   }
 
   tags = merge(
