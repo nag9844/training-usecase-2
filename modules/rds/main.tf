@@ -37,22 +37,6 @@ resource "aws_db_instance" "mysql" {
 }
 
 
-resource "aws_db_instance" "replica-mysql" {
-  instance_class          = "db.t3.micro"
-  skip_final_snapshot     = true
-  replicate_source_db     = aws_db_instance.mysql.identifier
-
-  tags = merge(
-    var.project_tags,
-    {
-      Name = "replica-rds"
-    }
-  )
-
-  depends_on = [aws_db_instance.mysql]  
-}
-
-
 
 resource "aws_db_instance" "demo-rds-read" {
   identifier             = "demo-rds-read"
@@ -60,5 +44,13 @@ resource "aws_db_instance" "demo-rds-read" {
   instance_class         = "db.t3.micro"
   skip_final_snapshot    = true
 # disable backups to create DB faster
-  backup_retention_period = 0
+  backup_retention_period = 1
+
+  tags = merge(
+    var.project_tags,
+    {
+      Name = "replica-rds"
+    }
+  )
+  depends_on = [aws_db_instance.mysql]  
 }
