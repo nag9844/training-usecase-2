@@ -46,7 +46,7 @@ resource "aws_db_instance" "mysql" {
 # Read Replica in Different AZ
 resource "aws_db_instance" "demo-rds-read" {
   identifier               = "demo-rds-read"
-  replicate_source_db      = aws_db_instance.mysql.identifier
+  replicate_source_db = aws_db_instance.mysql.arn
   instance_class           = "db.t3.micro"
   db_subnet_group_name     = aws_db_subnet_group.rds.name
   vpc_security_group_ids   = var.vpc_security_group_ids
