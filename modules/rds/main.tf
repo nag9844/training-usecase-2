@@ -32,13 +32,15 @@ resource "aws_db_instance" "mysql" {
   )
 }
 
-resource "aws_kms_key" "default" {
-  description = "Encryption key for automated backups"
-
-}
-
-resource "aws_db_instance_automated_backups_replication" "default" {
-  source_db_instance_arn = aws_db_instance.mysql.arn
-  kms_key_id             = aws_kms_key.default.arn
-
+resource "aws_db_instance" "replica-mysql" {
+  instance_class       = "db.t3.micro"
+  skip_final_snapshot  = true
+  # backup_retention_period = 7
+  replicate_source_db = aws_db_instance.mysql.identifier
+  tags = merge(
+    var.project_tags,
+    {
+      Name = "replica-rds"
+    }
+  )
 }
