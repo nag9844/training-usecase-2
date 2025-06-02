@@ -59,9 +59,6 @@ resource "aws_db_instance" "demo-rds-read" {
   replicate_source_db    = aws_db_instance.mysql.identifier
   instance_class         = "db.t3.micro"
   skip_final_snapshot    = true
-# Username and password must not be set for replicas
-  username = ""
-  password = ""
 # disable backups to create DB faster
   backup_retention_period = 0
 }
