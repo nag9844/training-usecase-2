@@ -33,15 +33,19 @@ resource "aws_db_instance" "mysql" {
   )
 }
 
+
 resource "aws_db_instance" "replica-mysql" {
-  instance_class       = "db.t3.micro"
-  skip_final_snapshot  = true
+  instance_class          = "db.t3.micro"
+  skip_final_snapshot     = true
+  replicate_source_db     = aws_db_instance.mysql.identifier
   backup_retention_period = 7
-  replicate_source_db = aws_db_instance.mysql.identifier
+
   tags = merge(
     var.project_tags,
     {
       Name = "replica-rds"
     }
   )
+
+  depends_on = [aws_db_instance.mysql]  
 }
