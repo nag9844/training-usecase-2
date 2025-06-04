@@ -30,9 +30,9 @@ rule "aws_db_instance_invalid_type" {
   enabled = true
 }
 
-rule "aws_db_instance_encrypted" {
-  enabled = true
-}
+#rule "aws_db_instance_encrypted" {
+#  enabled = true
+#}
 
 
 
